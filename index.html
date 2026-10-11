@@ -292,7 +292,10 @@ body.intro .skip{opacity:1}
   if (reduce){
     startShow(); intro.remove();
   } else {
+    introSvg.style.transition='none';
     sizeLogo();
+    void introSvg.offsetWidth;
+    introSvg.style.transition='';
     requestAnimationFrame(()=>intro.classList.add('in'));
     setTimeout(glide, 900 + HOLD_LOGO);
     document.querySelector('.skip').addEventListener('click', e=>{ e.stopPropagation(); glide(); });
