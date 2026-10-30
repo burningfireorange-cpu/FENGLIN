@@ -294,12 +294,20 @@ body.intro .skip{opacity:1}
   if (reduce){
     startShow(); intro.remove();
   } else {
-    introSvg.style.transition='none';
     sizeLogo();
-    void introSvg.offsetWidth;
-    introSvg.style.transition='';
-    requestAnimationFrame(()=>intro.classList.add('in'));
-    setTimeout(glide, 900 + HOLD_LOGO);
+    let begun=false;
+    const begin=()=>{
+      if(begun || started) return; begun=true;
+      sizeLogo();
+      // wait until the page has really painted twice, then fade in
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        if(started) return;
+        intro.classList.add('in');
+        setTimeout(glide, 900 + HOLD_LOGO);
+      }));
+    };
+    if (document.readyState==='complete') begin();
+    else { addEventListener('load', begin, {once:true}); setTimeout(begin, 3500); }
     document.querySelector('.skip').addEventListener('click', e=>{ e.stopPropagation(); glide(); });
     addEventListener('keydown', e=>{ if(!started && (e.key===' '||e.key==='Enter'||e.key==='Escape')) glide(); });
     addEventListener('pointerdown', e=>{ if(!started && !(e.target.closest && e.target.closest('.skip'))) glide(); });
