@@ -47,9 +47,9 @@ body.ready #slides::after{opacity:1}
 #intro.clear{background-color:transparent}
 #intro svg{position:absolute;height:auto;color:#111;opacity:0;
   transform-origin:top left;transform:translate(var(--ix,0px),var(--iy,0px)) scale(var(--is,1));
-  transition:opacity .9s ease, transform 1.15s cubic-bezier(.65,0,.2,1), color 1.15s ease}
+  transition:opacity .9s ease}
 #intro.in svg{opacity:1}
-#intro.move svg{color:var(--on-photo)}
+#intro.move svg{color:var(--on-photo);transition:opacity .9s ease, transform 1.15s cubic-bezier(.65,0,.2,1), color 1.15s ease}
 @media (prefers-reduced-motion:reduce){#intro{display:none}}
 
 /* top bar */
@@ -276,7 +276,9 @@ body.intro .skip{opacity:1}
       introSvg.style.setProperty('--iy', m.top+'px');
       introSvg.style.setProperty('--is', (m.height/h).toFixed(4));
     });
-    setTimeout(()=>{ intro.remove(); }, MOVE+200);
+    let gone=false; const endIntro=()=>{ if(gone) return; gone=true; intro.remove(); };
+    introSvg.addEventListener('transitionend', e=>{ if(e.propertyName==='transform') endIntro(); });
+    setTimeout(endIntro, MOVE+2500);  // fallback
   }
 
   function startShow(){
